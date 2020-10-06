@@ -9,8 +9,8 @@ import java.util.Properties;
  * 发邮件工具类
  */
 public final class MailUtils {
-    private static final String USER = ""; // 发件人称号，同邮箱地址
-    private static final String PASSWORD = ""; // 如果是qq邮箱可以使户端授权码，或者登录密码
+    private static final String USER = "846801669@qq.com"; // 发件人称号，同邮箱地址
+    private static final String PASSWORD = "sxlbndjaisbkbfbb"; // 如果是qq邮箱可以使户端授权码，或者登录密码
 
     /**
      *
@@ -68,7 +68,9 @@ public final class MailUtils {
     }
 
     public static void main(String[] args) throws Exception { // 做测试用
-        MailUtils.sendMail("itcast_xian@163.com","你好，这是一封测试邮件，无需回复。","测试邮件");
+        String content = "<a href='http://mil.hdu.edu.cn'>点击激活【MIL录用通知】,查看您的录用信息</a>";
+        MailUtils.sendMail("1459921878@qq.com", content,"MIL录用通知");
+//        MailUtils.sendMail("yuanfu@hdu.edu.cn","你好，这是一封测试邮件，无需回复。","测试邮件");
         System.out.println("发送成功");
     }
 
