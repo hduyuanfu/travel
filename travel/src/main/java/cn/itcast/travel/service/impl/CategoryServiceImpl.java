@@ -6,6 +6,7 @@ import cn.itcast.travel.domain.Category;
 import cn.itcast.travel.service.CategoryService;
 import cn.itcast.travel.util.JedisUtil;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,13 @@ public class CategoryServiceImpl implements CategoryService {
         // 1.1获取jedis客户端
         Jedis jedis = JedisUtil.getJedis();
         // 1.2可使用sortedset排序查询
-        Set<String> categorys = jedis.zrange("category", 0, -1);
+//        Set<String> categorys = jedis.zrange("category", 0, -1);
+        // 1.3查询sortedset中的分数（cid）和值(cname)
+        Set<Tuple> categorys = jedis.zrangeWithScores("category", 0, -1);
         // 2.判断查询的集合是否为空
         List<Category> cs = null;
         if(categorys == null || categorys.size() == 0) {
-            System.out.println("数据库中查找");
+//            System.out.println("数据库中查找");
             // 3.如果为空，需要从数据库查询，再将结果存入redis
             // 3.1从数据库查询
             cs = categoryDao.findAll();
@@ -34,12 +37,13 @@ public class CategoryServiceImpl implements CategoryService {
                 jedis.zadd("category", c.getCid(), c.getCname());
             }
         } else {
-            System.out.println("redis中查找");
+//            System.out.println("redis中查找");
             // 4.如果不为空，将sortedset数据存入list
             cs = new ArrayList<Category>();
-            for (String name : categorys) {
+            for (Tuple tuple : categorys) {
                 Category category = new Category();
-                category.setCname(name);
+                category.setCid((int) tuple.getScore());
+                category.setCname(tuple.getElement());
                 cs.add(category);
             }
         }
